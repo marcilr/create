@@ -1,0 +1,6 @@
+create.txt
+Created Wed, Nov 28, 2018  9:15:39 AM
+by Raymond E. Marcil <marcilr@gmail.com>
+
+
+Script to create file with filename, author, and creation date
