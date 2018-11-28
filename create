@@ -1,3 +1,5 @@
+
+#!/bin/bash
 # create
 # Created Wed, Nov 28, 2018  9:15:39 AM
 # by Raymond E. Marcil <marcilr@gmail.com>
@@ -5,3 +7,69 @@
 # 
 # Script to create file with filename, author, and creation date
 #
+
+
+# Configuration
+AUTHOR="Raymond E. Marcil"
+
+# Get current date for create date
+DATE=`date`
+
+#
+# Enable/disable debugging
+# Set 1 or higher for debugging output
+#
+DEBUG=0
+
+# Functions
+
+#
+# debug() 
+#
+debug() {
+  if [ "${DEBUG}" != "0" ]; then
+    echo "debug() ${1}"
+  fi
+
+}
+
+
+#
+# Get ip address
+# NOTE: The ipaddress is echoed to the display
+#       Uncertain how to suppress this output from script
+#
+ip=`ipconfig | grep "IPv4 Address" | sed 's:.* ::g'`
+debug "ip: ${ip}"
+
+
+# Set email address based on workstation ip address
+if echo ${ip} | grep "204.29.174"; then
+  EMAIL="ray.marcil@alaska.gov"
+else
+  EMAIL="marcilr@gmail.com"
+fi
+debug "EMAIL: ${EMAIL}"
+
+# If no command line argument report usage and exit 
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <file>" >&2
+  exit 1
+fi
+
+#
+# If command line argument create file with filename,
+# author, and creation date in header
+#
+if ! [ -e "$1" ]; then
+  echo ${1} >> ${1}
+  echo "Created ${DATE}" >> ${1}
+  echo "by ${AUTHOR} <${EMAIL}>" >> ${1}
+
+  # echo "$1 not found" >&2
+  exit 1
+fi
+
+# If file exists repor and exit
+echo "${1} exists, aborting."
+exit 0
