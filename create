@@ -129,8 +129,7 @@ fi
 # If file exists report and exit
 echo "${1} exists, aborting."
 
-debug "MAIN *** START ***"
+debug "MAIN *** END ***"
 
-
-exit 0
+exit 1
 
