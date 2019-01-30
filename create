@@ -7,7 +7,15 @@
 # 
 # Script to create file with filename, author, and creation date
 #
-
+# If in Alaska State DNR git repostory, with "dnratwtfsp" in
+# repo URI set email in header to ray.marcil@alaska.gov"
+#
+#
+# Links
+# =====
+# Detect if executable file is on user's PATH
+# https://stackoverflow.com/questions/6569478/detect-if-executable-file-is-on-users-path
+#
 
 # Configuration
 AUTHOR="Raymond E. Marcil"
@@ -47,31 +55,49 @@ debug() {
 #
 getEmail() {
 
-    # Check if in git repository
-    if [ -d ".git" ]; then
+    debug "getEmail() *** START ***"
+    debug "getEmail() EMAIL=${EMAIL}"
 
-      # Get string with source repository
-      REPO=`git remote -v`
+    #
+    # Test if git available
+    # /usr/bin/git - debian
+    # /bin/git     - windows 10
+    #
+    if [ -x "/usr/bin/git" ] || [ -x "/bin/git" ]; then
+        debug "getEmail() Found git!"
 
-      #
-      # If repo host is "dnratwtfsp" set
-      # set Alaska state email address.
-      #
-      if [[ $REPO == *"dnratwtfsp"* ]]; then
-          EMAIL="ray.marcil@alaska.gov"
-      fi
+        # Get string with source repository
+        REPO=`git remote -v`
 
+        debug "getEmail: REPO=${REPO}"
+
+        #
+        # If repo host is "dnratwtfsp" set
+        # set Alaska state email address.
+        #
+        if [[ $REPO == *"dnratwtfsp"* ]]; then
+            EMAIL="ray.marcil@alaska.gov"
+        fi
+
+   else
+     debug "getEmail() Git not found...."
    fi
 
-}  # end createEmail()
+   debug "getEmail() EMAIL=${EMAIL}"
+   debug "getEmail() *** END ***"
+
+}  # end getEmail()
 
 
 # ==========================================
 # Main
 # ==========================================
 
+debug "MAIN *** START ***"
+
 # Get email address based on repository url
 getEmail
+
 debug "EMAIL: ${EMAIL}"
 
 # If no command line argument report usage and exit 
@@ -81,7 +107,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 #
-# If command line argument create file with filename,
+# If command line argument then create file with filename,
 # author, and creation date in header
 #
 if ! [ -e "$1" ]; then
@@ -89,10 +115,22 @@ if ! [ -e "$1" ]; then
   echo "Created ${DATE}" >> ${1}
   echo "by ${AUTHOR} <${EMAIL}>" >> ${1}
 
-  # echo "$1 not found" >&2
-  exit 1
+  # If file created exit successfully
+  if [ -f ${1} ]; then
+    debug "MAIN: Created: ${1}"
+    debug "MAIN: *** END ***"
+    exit 0
+  else
+    echo "Failed to create ${1}"
+  fi
+
 fi
 
-# If file exists repor and exit
+# If file exists report and exit
 echo "${1} exists, aborting."
+
+debug "MAIN *** START ***"
+
+
 exit 0
+
