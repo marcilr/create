@@ -23,15 +23,17 @@ AUTHOR="Raymond E. Marcil"
 # Default to public email address
 EMAIL="marcilr@gmail.com"
 
+# Binaries
+DATE=/bin/date
 
-# Get current date for create date
-DATE=`date`
+# Get full datastamp for header
+DATESTAMP=`${DATE}`
 
 #
 # Enable/disable debugging
 # Set 1 or higher for debugging output
 #
-DEBUG=0
+DEBUG=1
 
 
 # Functions
@@ -43,7 +45,6 @@ debug() {
   if [ "${DEBUG}" != "0" ]; then
     echo "debug() ${1}"
   fi
-
 }
 
 
@@ -89,6 +90,28 @@ getEmail() {
 }  # end getEmail()
 
 
+
+#
+# getCopyright()
+#
+# Get copyright to add to header.
+#
+getCopyright() {
+
+  debug "getCopyright *** START ***"
+
+  YEAR=`${DATE} +"%Y"`
+  debug "getCopyright() DATE=${DATE}"
+
+  COPYRIGHT="Copyright (C) ($YEAR) by ${AUTHOR} ${EMAIL}"
+  debug "getCopyright() COPYRIGHT=${COPYRIGHT}"
+
+  debug "getCopyright *** END ***"
+
+}
+
+
+
 # ==========================================
 # Main
 # ==========================================
@@ -112,7 +135,7 @@ fi
 #
 if ! [ -e "$1" ]; then
   echo ${1} >> ${1}
-  echo "Created ${DATE}" >> ${1}
+  echo "Created ${DATESTAMP}" >> ${1}
   echo "by ${AUTHOR} <${EMAIL}>" >> ${1}
 
   # If file created exit successfully
@@ -132,4 +155,3 @@ echo "${1} exists, aborting."
 debug "MAIN *** END ***"
 
 exit 1
-
